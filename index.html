@@ -1,0 +1,208 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Anti-DreamBooth</title>
+<link href="./Anti_DreamBooth_files/style.css" rel="stylesheet">
+<script type="text/javascript" src="./Anti_DreamBooth_files/jquery.mlens-1.0.min.js"></script> 
+<script type="text/javascript" src="./Anti_DreamBooth_files/jquery.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+<div class="content">
+  <h1><strong>Anti-DreamBooth: Protecting Users from Personalized Text-to-Image Synthesis</strong></h1>
+  <p id="authors"><a class="hover-underline-animation-blue" href="https://github.com/Luvata" style="color: #224b8d; text-decoration: none;">Thanh Van Le</a> 
+                  <a class="hover-underline-animation-blue" href="https://hao-pt.github.io/" style="color: #224b8d; text-decoration: none;">Hao Phung</a> 
+                  <a class="hover-underline-animation-blue" href="https://github.com/thuanz123" style="color: #224b8d; text-decoration: none;">Thuan Hoang Nguyen</a> 
+                  <a class="hover-underline-animation-blue" href="https://scholar.google.com/citations?user=g0RS3_kAAAAJ&hl=en&oi=ao" style="color: #224b8d; text-decoration: none;">Quan Dao</a> 
+                  <a class="hover-underline-animation-blue" href="https://ngoctnq.github.io/" style="color: #224b8d; text-decoration: none;">Ngoc Tran</a> 
+                  <a class="hover-underline-animation-blue" href="https://sites.google.com/site/anhttranusc/" style="color: #224b8d; text-decoration: none;">Anh Tran</a><br>
+    <br>
+    <span style="font-size: 24px;">
+      <a class="hover-underline-animation-black" href="https://www.vinai.io/" style="color: black; text-decoration: none;">VinAI Research</a>
+    </span>
+  </p>
+  <img src="./Anti_DreamBooth_files/teaser_static.jpg" class="teaser-gif" style="width:95%;"><br>
+  <h4 style="text-align:center"><em>It’s like a security booth; once the subject is protected, he/she cannot be synthesized … even in your dreams.</em></h4>
+  <br>
+    <font size="+2">
+          <p style="text-align: center;">
+            <!-- <a href="" target="_blank">[Paper]</a> &emsp; -->
+            <a class="btn btn-primary rounded-pill" href="#" role="button" style="color: black;background-color: black;">
+              <span class="material-icons"> description </span> 
+              <span>Paper</span>
+            </a> &emsp;
+            <!-- <a href="https://github.com/VinAIResearch/Anti-DreamBooth.git" target="_blank">[Code]</a> &emsp; -->
+            <a class="btn btn-primary rounded-pill" href="https://github.com/VinAIResearch/Anti-DreamBooth.git" role="button" style="color: black;background-color: black;">
+                <i class="material-icons"> code </i> 
+                <span>Code</span>
+            </a> &emsp;
+            <!-- <a href="Anti_DreamBooth_files/bibtex.txt" target="_blank">[BibTeX]</a> -->
+            <a class="btn btn-primary rounded-pill" href="Anti_DreamBooth_files/bibtex.txt" role="button" style="color: black;background-color: black;">
+              <span class="material-icons"> format_quote </span> 
+              BibTex
+            </a>
+          </p>
+    </font>
+</div>
+<div class="content">
+  <h2 style="text-align:center;">Abstract</h2>
+  <p>Text-to-image diffusion models are nothing but a revolution, allowing anyone, even without design skills, to create realistic images from simple text inputs. With powerful personalization tools like DreamBooth, they can generate images of a specific person just by learning from his/her few reference images. However, when misused, such a powerful and convenient tool can produce fake news or disturbing content targeting any individual victim, posing a severe negative social impact. In this paper, we explore a defense system called Anti-DreamBooth against such malicious use of DreamBooth. The system aims to add subtle noise perturbation to each user's image before publishing in order to disrupt the generation quality of any DreamBooth model trained on these perturbed images. We investigate a wide range of algorithms for perturbation optimization and extensively evaluate them on two facial datasets over various text-to-image model versions. Despite the complicated formulation of DreamBooth and Diffusion-based text-to-image models, our methods effectively defend users from the malicious use of those models. Their effectiveness withstands even adverse conditions, such as model or prompt/term mismatching between training and testing.</p>
+</div>
+<div class="content">
+  <h2>Motivation</h2>
+  <p> By finetuning a text-to-image model using DreamBooth, a malicious attacker is 
+able to generate different images of a specific person/concept in different contexts, for a purpose of (1) creating highly-sensitive content, 
+(2) stealing artistic style, or (3) spreading misinformation. Hence, our motivation is to prevent such scenarios by processing the subject's images
+ before online release.</p>
+  <br>
+  <img class="summary-img" src="./Anti_DreamBooth_files/motivation_new.svg" style="width:95%;"> <br>
+  *The black censor is manually added. <i>To avoid causing unwanted negative impacts on real people, (1) is generated from a DreamBooth model trained on images of a virtual character collected from <a class="hover-underline-animation" href="https://twitter.com/theaiidols" style="color: #EA48CA; text-decoration: none;">Ai-idols Studio</a>.</i>
+</div>
+<div class="content">
+  <h2>Defense Scenario</h2>
+  <p>Given a few images of a subject collected online, a malicious attacker will finetune
+ the DreamBooth model to create harmful content targeting an 
+individual. Hence, before users release their images online, we protect 
+these photos using our method Anti-DreamBooth. The entire attack-defense flow is described below: </p>
+  <p> (a) We optimize imperceptible noises added to the original clean 
+images such that the perturbed images are nearly identical to the clean 
+ones and any DreamBooth models finetuned on these images have poor 
+quality.</p>
+  <br>
+  <img class="summary-img" src="./Anti_DreamBooth_files/perturbation_training.svg" style="width:80%;"> <br>
+  <p> (b) The attacker collects the perturbed images to fine-tune a text-to-image model following the DreamBooth algorithm. Specifically, he fine-tunes the model with these images 
+paired with an instance prompt containing a unique identifier (e.g., "A 
+photo of <em>sks</em> person”); in parallel, a class-specific prior preservation loss is applied using a class prompt (e.g., "A photo of a person”).<p>
+  <img class="summary-img" src="./Anti_DreamBooth_files/fine_tuning.svg" style="width:80%;"> <br>
+  <p> (c) Using the fooled DreamBooth model, the attacker can only 
+generate noisy and corrupted images of the subject regardless of 
+different sentences to synthesize the subjects. Our method can even 
+generalize to prompts unseen during perturbation training. <p>
+  <img class="summary-img" src="./Anti_DreamBooth_files/inference.svg" style="width:80%;"> <br>
+</div>
+<div class="content">
+  <h2>Controlled Settings</h2>
+  <p>Results for protecting instances in a convenient setting. Here, we 
+assume to have prior knowledge about the pretrained text-to-image 
+generator, training term (e.g., “sks”), and training prompt the attacker
+ will use. We display the conditioning prompts above each image.</p>
+  <div class="container" align="center">
+    <div class="swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide"><img src="./Anti_DreamBooth_files/convenient_vgg_results.svg" style="width:100%;"></div>
+        <div class="swiper-slide"><img src="./Anti_DreamBooth_files/convenient_vgg_results_1.svg" style="width:100%;"></div>
+        <div class="swiper-slide"><img src="./Anti_DreamBooth_files/convenient_vgg_results_2.svg" style="width:100%;"></div>
+      </div>
+      <br><br>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <h2>Sensitive-content Mitigation</h2>
+  <p>
+    As described in the motivation section, we present our approach to defending against the presence of sensitive content that specifically targets women.
+    As depicted in the figure below, such contents are significantly distorted with noticeable artifacts, which are induced by our method.
+  </p>
+  <figure>
+    <img src="./Anti_DreamBooth_files/sdchar_sensitive.svg" style="width:100%;">
+    <br><br>
+    <figcaption>
+      <span class="caption">*The black censor is manually added.</span>
+      <i class="photo-credit">To avoid causing unwanted negative impacts on real people, we use images of a virtual character collected from <a class="hover-underline-animation" href="https://twitter.com/theaiidols" style="color: #EA48CA; text-decoration: none;">Ai-idols Studio</a>.</i>
+    </figcaption>
+  </figure>
+
+</div>
+<div class="content">
+  <h2>Art Style Protection</h2>
+  <p>Our method has also proven effective in preventing the imitation of famous artworks by well-known artists such as Paul Jacoulet and Félix Vallotton, further highlighting its benefits.</p>
+  <div class="container" align="center">
+    <div class="swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide"><img src="./Anti_DreamBooth_files/artist-Felix-Vallotton-compare.svg" style="width:100%;"></div>
+        <div class="swiper-slide"><img src="./Anti_DreamBooth_files/artist-Paul-Jacoulet-compare.svg" style="width:100%;"></div>
+        <div class="swiper-slide"><img src="./Anti_DreamBooth_files/artist-Utagawa-Kuniyoshi-compare.svg" style="width:100%;"></div>
+      </div>
+      <br><br>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <h2>Misinformation Mitigation</h2>
+  <p>In response to the recent spread of <a class="hover-underline-animation" href="https://www.bbc.com/news/world-us-canada-65069316" style="color: #EA48CA; text-decoration: none;">false news about Donald Trump's alleged arrest by the police</a>, we demonstrate the effectiveness of our method in preventing the distribution of misinformation.</p>
+  <br>
+  <img class="summary-img" src="./Anti_DreamBooth_files/trump_defense.svg" style="width:100%;"> <br>
+  *Here we assume that the term "Donald Trump" was removed from the pretrained text-to-image model, e.g., via <a class="hover-underline-animation" href="https://erasing.baulab.info" style="color: #EA48CA; text-decoration: none;">Erasing Diffusion</a>, and the attacker has to use DreamBooth instead of calling that term directly.
+</div>
+<div class="content">
+  <h2>Adverse Settings</h2>
+  <p>Results for protecting instances in adverse settings. For example, we don't have prior knowledge about the pretrained text-to-image generator will be used by the attacker, so we use an ensemble of three versions of Stable Diffusion (v1.4, v1.5, and v2.1) to train the adversarial noise and then validate on DreamBooth models which are finetuned on Stable Diffusion v2.1 and v2.0. We test with two random subjects and denote them in green and red, respectively.</p>
+<img class="summary-img" src="./Anti_DreamBooth_files/ensemble.png" style="width:100%;">
+  <br>
+  <p>Another possible case is that we may not have prior knowledge about the training term or prompt so we examine the transferability of the learned adversarial noise when there is a change in the training terms/promtps.</p>
+<img class="summary-img" src="./Anti_DreamBooth_files/cross_terms_and_prompts.png" style="width:100%;">
+  <br>
+  <p>  In the first scenario, the training term is changed from “sks” to “t@t”. In the second scenario, the training prompt is replaced with “a DSLR portrait of <em>sks</em> person” instead of “a photo of <em>sks</em> person”. Here, S<sup>*</sup> is “t@t” for term mismatching and “sks” for prompt mismatching. <p>
+</div>
+<div class="content">
+  <h2>Real-world Settings</h2>
+  <p>Not only work in laboratory settings, our proposed defense 
+also works in real-world scenarios as it successfully disrupts 
+personalized generation outputs of a black-box and commercialized AI 
+service named <a class="hover-underline-animation" href="https://www.astria.ai/" style="color: #EA48CA; text-decoration: none">Astria</a>, which comes with several model settings. First, we test our method capability on the recommended option Stable Diffusion version 1.5 with face detection enabled.</p>
+  <br>
+  <img class="summary-img" src="./Anti_DreamBooth_files/astria1.png" style="width:100%;"> <br>
+  <p>With the increasing availability of public text-to-image models, it is not always the case that the attacker uses Stable Diffusion, but he 
+may opt for a different pretrained model. Here, we test another Astria's setting, which is Protogen version 3.4 with Prism and 
+face detection enabled.</p>
+  <br>
+  <img class="summary-img" src="./Anti_DreamBooth_files/astria2.png" style="width:100%;"> <br>
+
+</div>
+<div class="content">
+  <h2>Uncontrolled Settings</h2>
+  <p>In case the malicious attacker may get in hand some clean images of the target subject and mix them with the perturbed images for DreamBooth training, our Anti-DreamBooth still can protect users unless there are too many clean examples. As shown below, our defense is still quite effective when half of the images are perturbed, but its effectiveness reduces when more clean images are introduced.</p>
+  <br>
+  <img class="summary-img" src="./Anti_DreamBooth_files/uncontrolled.png" style="width:100%;"> <br>
+</div>
+<div class="content">
+  <h2>BibTex</h2>
+  <code> @article{le_etal2023antidreambooth,<br>
+  &nbsp;&nbsp;title={Anti-DreamBooth: Protecting Users from Personalized Text-to-Image Synthesis},<br>
+  &nbsp;&nbsp;author={Thanh Van Le, Hao Phung, Thuan Hoang Nguyen, Quan Dao, Ngoc Tran and Anh Tran},<br>
+  &nbsp;&nbsp;journal={arxiv preprint},<br>
+  &nbsp;&nbsp;volume={arxiv:<id number>},<br>
+  &nbsp;&nbsp;year={2023}<br>
+  } </code> 
+</div>
+<div class="content" id="acknowledgements">
+  <p><strong>Acknowledgements</strong>:
+    We thank Nataniel Ruiz, Yuanzhen Li, Varun Jampani, Yael Pritch, Michael Rubinstein, and Kfir Aberman for the wonderful work DreamBooth and its <a class="hover-underline-animation" href="https://dreambooth.github.io/" style="color: #EA48CA; text-decoration: none">project page</a>. Finally, a special "thank you" to Stability AI, RunwayML and CompVis for publishing different version of pretrained Stable Diffusion models.
+  </p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+
+<script>
+  const swiper = new Swiper('.swiper', {
+    autoplay: {
+      delay: 3000,
+      disableOnInteraction: false,
+    },
+    
+    loop: true,
+
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+  });
+</script>
+
+</body>
+</html>
