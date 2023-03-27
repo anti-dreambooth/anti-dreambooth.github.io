@@ -228,22 +228,20 @@
   </div>
   <div class="content">
     <h2>Real-world Settings</h2>
-    <p>Not only work in laboratory settings, our proposed defense
-      also works in real-world scenarios as it successfully disrupts
-      personalized generation outputs of a black-box and commercialized AI
-      service named <a class="hover-underline-animation" href="https://www.astria.ai/"
-        style="color: #EA48CA; text-decoration: none">Astria</a>, which comes with several model settings. First, we
-      test our method capability on the recommended option Stable Diffusion version 1.5 with face detection enabled.</p>
+    <p>Our proposed defense not only works in laboratory settings but also in real-world scenarios, as it successfully
+      disrupts the personalized generation outputs of a black-box and commercialized AI service named <a
+        class="hover-underline-animation" href="https://www.astria.ai/"
+        style="color: #EA48CA; text-decoration: none">Astria</a>. First, we test our method's capability on Astria's
+      default configuration: Stable Diffusion version 1.5 with face detection enabled.</p>
     <br>
     <img class="summary-img" src="./Anti_DreamBooth_files/astria1.png" style="width:100%;"> <br>
     <p>With the increasing availability of public text-to-image models, it is not always the case that the attacker uses
       Stable Diffusion, but he
-      may opt for a different pretrained model. Here, we test another Astria's setting, which is Protogen version 3.4
+      may opt for a different pretrained model. Here, we test another Astria setting, which is Protogen version 3.4
       with Prism and
       face detection enabled.</p>
     <br>
     <img class="summary-img" src="./Anti_DreamBooth_files/astria2.png" style="width:100%;"> <br>
-
     <details>
       <summary>Prompts</summary>
       <div>(1) portrait of <i><b>sks</b></i> person portrait wearing fantastic Hand-dyed cotton clothes, embellished
@@ -260,6 +258,9 @@
         Casey Weldon and wlop :: ornate, dynamic, particulate, rich colors, intricate, elegant, highly detailed,
         centered, artstation, smooth, sharp focus, octane render, 3d</div>
     </details>
+    <p>As can be seen, our method significantly reduces the quality of the generated images in various complex prompts
+      and on both target models. This highlights the robustness of our approach, which can defend against these services
+      without requiring knowledge of their underlying configurations.</p>
   </div>
   <div class="content">
     <h2>Uncontrolled Settings</h2>
