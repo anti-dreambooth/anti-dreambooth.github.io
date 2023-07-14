@@ -1,7 +1,6 @@
-@article{le_etal2023antidreambooth,
+@InProceedings{le_etal2023antidreambooth,
   title={Anti-DreamBooth: Protecting users from personalized text-to-image synthesis},
   author={Thanh Van Le, Hao Phung, Thuan Hoang Nguyen, Quan Dao, Ngoc Tran and Anh Tran},
-  journal={arxiv preprint},
-  volume={arxiv:<id number>},
-  year= {2023}
+  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
+  year={2023}
 }
